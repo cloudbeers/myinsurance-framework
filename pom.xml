@@ -3,11 +3,11 @@
 
     <groupId>com.myinsurance.www</groupId>
     <artifactId>myinsurance-framework</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
     <packaging>jar</packaging>
     <scm>
         <connection>scm:git:https://github.com/cloudbeers/myinsurance-framework.git</connection>
-      <tag>HEAD</tag>
+      <tag>myinsurance-framework-0.0.2</tag>
   </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
