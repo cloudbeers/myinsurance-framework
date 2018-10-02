@@ -28,7 +28,7 @@ spec:
           }
           mail to: buildParameters.notification.email,
             subject: "${env.BUILD_DISPLAY_NAME} successful",
-            body: "Please go to ${ENV.BUILD_URL} and verify the build"
+            body: "Please go to ${env.BUILD_URL} and verify the build"
 
         }
       } // stage
