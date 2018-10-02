@@ -1,10 +1,11 @@
-pipeline {
-  agent {
-    kubernetes {
-      label 'myinsurance-fwk'
-      yaml """
-  spec:
-    containers:
+#!/usr/bin/env groovy
+
+def label = "healthcare-${UUID.randomUUID().toString()}"
+podTemplate(label: label, yaml: """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
     - name: jnlp
     - name: jdk
       image: openjdk:8-jdk
@@ -12,23 +13,19 @@ pipeline {
       - cat
       tty: true
 """
-    }
-  }
-  options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
-  }
-  triggers {
-    snapshotDependencies()
-  }
-  stages {
-    stage('Build Java App') {
-      steps {
+) {
+    properties([
+      buildDiscarder(logRotator(numToKeepStr: '5')),
+      pipelineTriggers([snapshotDependencies()])])
+    node (label) {
+      checkout scm
+      stage('Build') {
         container ('jdk') {
           withMaven(mavenOpts: '-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn') {
-            sh './mvnw clean deploy'
+            def goals = (env.BRANCH_NAME == 'master' || env.BRANCH_NAME =~ /v\d+\.x/ ) ? 'clean deploy' : 'clean verify'
+            sh "./mvnw $goals"
           }
         }
-      } // steps
-    } // stage
-  } // stages
-}
+      } // stage
+    } // node
+  }
