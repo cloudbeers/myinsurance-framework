@@ -1,0 +1,3 @@
+type: maven-library
+notification:
+  email: cleclerc@cloudbees.com

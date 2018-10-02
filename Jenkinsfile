@@ -21,10 +21,15 @@ spec:
       checkout scm
       stage('Build') {
         container ('jdk') {
+          def buildParameters = readYaml(file: 'build.yaml')
           withMaven(mavenOpts: '-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn') {
             def goals = (env.BRANCH_NAME == 'master' || env.BRANCH_NAME =~ /v\d+\.x/ ) ? 'clean deploy' : 'clean verify'
             sh "./mvnw $goals"
           }
+          mail to: buildParameters.notification.email,
+            subject: "${env.BUILD_DISPLAY_NAME} successful",
+            body: "Please go to ${ENV.BUILD_URL} and verify the build"
+
         }
       } // stage
     } // node
